@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4996)
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -7,6 +8,7 @@
 
 struct IBoolArray
 {
+	virtual void print() = 0;// For testing.
 	virtual void Resize(size_t Size = 1) = 0;
 	virtual bool operator[](unsigned index) = 0;
 	virtual void set(unsigned index, bool b) = 0;
@@ -56,19 +58,17 @@ public:
 	}
 	void Resize(size_t Size = 1)
 	{
-		assert(Size > 0);
-		if (this->Size != Size)
+		//assert(Size > 0);
+		if (Size && this->Size != Size)
 		{
-			unsigned length = ((unsigned)ceil((Size - 1) / BatchSize)) + 1;
-			if (this->length != length)
+			unsigned newlength = ((unsigned)ceil((Size - 1) / BatchSize)) + 1;
+			if (length != newlength)
 			{
-				T* newArr = new T[length];
-				int* p, *o;
-				//std::copy(p, p + 10, o);
-				//std::copy(batchArray, batchArray/*(batchArray + std::min(this->length, length))*/, newArr);
-				//std::copy(batchArray, batchArray, newArr);
+				T* newArr = new T[newlength];
+				std::copy(batchArray, batchArray + std::min(length, newlength), newArr);
 				delete[] batchArray;
 				batchArray = newArr;
+				length = newlength;
 			}
 			this->Size = Size;
 		}
